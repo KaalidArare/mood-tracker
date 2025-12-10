@@ -14,7 +14,7 @@ async function init() {
       port: process.env.DB_PORT || 3306,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      multipleStatements: true    // IMPORTANT ⚠️ allows running >1 SQL command
+      multipleStatements: true   // allow executing multiple statements
     });
 
     console.log("Running schema.sql...");

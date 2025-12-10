@@ -1,4 +1,4 @@
-// backend/server.js
+
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -7,7 +7,7 @@ const pool = require('./db');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ---- MIDDLEWARE ----
+// middleware
 app.use(cors());            // allow requests from your React dev server
 app.use(express.json());    // parse JSON bodies
 
@@ -16,7 +16,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// ---- TEST ROUTES ----
+// test route
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
@@ -31,7 +31,7 @@ app.get('/api/db-test', async (req, res) => {
   }
 });
 
-// ---- MOOD ROUTES ----
+// mood routes
 
 // GET all moods
 app.get('/api/moods', async (req, res) => {
@@ -72,7 +72,7 @@ app.post('/api/moods', async (req, res) => {
   }
 });
 
-// ---- START SERVER ----
+// start server
 app.listen(PORT, () => {
   console.log(`Backend server running on port ${PORT}`);
 });
