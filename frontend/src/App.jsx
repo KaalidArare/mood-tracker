@@ -1,8 +1,7 @@
 
 import { useEffect, useState } from 'react';
-import "./app.css";
+import "./App.css";
 
-const API_BASE_URL = 'http://localhost:3000';
 
 const MOOD_OPTIONS = ['Very Happy', 'Happy', 'Neutral', 'Sad', 'Very Sad', 'Stressed', 'Calm'];
 
@@ -19,7 +18,7 @@ function App() {
     const fetchMoods = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${API_BASE_URL}/api/moods`);
+        const res = await fetch('/api/moods');
         const data = await res.json();
         setMoods(data);
       } catch (err) {
@@ -44,7 +43,7 @@ function App() {
 
     try {
       setSubmitting(true);
-      const res = await fetch(`${API_BASE_URL}/api/moods`, {
+      const res = await fetch('/api/moods', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mood, note }),
