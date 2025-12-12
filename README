@@ -1,1 +1,117 @@
 # mood-tracker
+
+A simple full-stack web application that allows users to log their daily mood and optional notes, store them in a MySQL database, and view recent mood entries.
+This project demonstrates a complete workflow using React, Node.js/Express, MySQL, and deployment to a Linux VM with Nginx and PM2.
+
+# Application Features
+
+- Select a mood from predefined options
+
+- Add optional notes
+
+- Save mood entries to MySQL
+
+- View a list of recent moods
+
+- REST API with JSON responses
+
+- Deployed and accessible via public IP
+
+# Local Development Setup
+
+- Clone the repository
+- git clone https://github.com/<your-username>/mood-tracker.git
+- cd mood-tracker
+
+# Backend setup
+- cd backend
+- npm install
+
+
+
+
+# Initialize the database:
+
+node initDB.js
+
+Start the backend:
+
+npm start
+
+Test backend:
+
+http://localhost:3000/api/health
+
+http://localhost:3000/api/moods
+
+# Frontend setup (local)
+
+- cd ../frontend
+- npm install
+- npm run dev
+
+
+Frontend will call:
+
+fetch('/api/moods')
+
+# VM Deployment (Sprint 2)
+
+System setup (Ubuntu VM)
+
+sudo apt update
+yes | sudo DEBIAN_FRONTEND=noninteractive apt-get -yqq upgrade
+
+
+Install core dependencies:
+
+sudo apt install -y git nginx mysql-server
+
+
+Install Node.js (LTS) and PM2:
+
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt install -y nodejs
+sudo npm install -g pm2
+
+# MySQL configuration
+
+Create database and user:
+
+CREATE DATABASE mood_tracker_db;
+CREATE USER 'newuser'@'%' IDENTIFIED BY 'MoodPass321';
+GRANT ALL PRIVILEGES ON mood_tracker_db.* TO 'newuser'@'%';
+FLUSH PRIVILEGES;
+
+# Backend deployment with PM2
+
+cd /root
+git clone https://github.com/<your-username>/mood-tracker.git
+cd mood-tracker/backend
+npm install
+node initDB.js
+pm2 start server.js --name mood-tracker
+pm2 startup
+pm2 save
+
+# Frontend production build
+cd ../frontend
+npm install
+npm run build
+
+
+# Deploy frontend to Nginx:
+
+sudo mkdir -p /var/www/mood-tracker
+sudo rm -rf /var/www/mood-tracker/*
+sudo cp -r dist/* /var/www/mood-tracker/
+
+# Enable site 
+
+sudo ln -s /etc/nginx/sites-available/mood-tracker /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+
+# Accessing the app
+
+http://164.92.87.138/
