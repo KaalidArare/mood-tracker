@@ -32,6 +32,7 @@ function App() {
     fetchMoods();
   }, []);
 
+   // Save mood (POST)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -43,18 +44,34 @@ function App() {
 
     try {
       setSubmitting(true);
+
       const res = await fetch('/api/moods', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mood, note }),
       });
 
+      const contentType = res.headers.get('content-type') || '';
+      const raw = await res.text();
+
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || 'Failed to save mood');
+        let message = `Request failed (${res.status})`;
+        if (contentType.includes('application/json')) {
+          try {
+            const errData = JSON.parse(raw);
+            message = errData.error || message;
+          } catch {}
+        } else {
+          message = 'Server returned non-JSON response. (Likely Nginx/Express error page)';
+        }
+        throw new Error(message);
       }
 
-      const newMood = await res.json();
+      if (!contentType.includes('application/json')) {
+        throw new Error('Server returned non-JSON response on success.');
+      }
+
+      const newMood = JSON.parse(raw);
       setMoods((prev) => [newMood, ...prev]);
       setMood('');
       setNote('');
@@ -65,7 +82,7 @@ function App() {
       setSubmitting(false);
     }
   };
-
+  
   return (
     <div className="full-width-box" style={{ maxWidth: 600, margin: '2rem auto', fontFamily: 'sans-serif' }}>
       <h1>Mood Tracker</h1>
